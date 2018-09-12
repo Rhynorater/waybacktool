@@ -29,23 +29,26 @@ def waybackurls(host, with_subs):
 
 def check(url):
     url = url.strip("\r").strip().strip('"').strip("'")
-    req = requests.head(url, verify=False)
-    status_code = req.status_code
-    if status_code == 404:
-        return 
-    if "Content-Length" in req.headers.keys():
-        cLength = req.headers["Content-Length"]
-    else:
-        cLength = "Unknown"
-    if  "Content-Type" in req.headers.keys():
-        cType = req.headers["Content-Type"]
-    else:
-        cType = "Unknown"
-    if str(status_code)[0] == "3":
-        rUrl = req.headers["Location"]
-        print ", ".join([url, str(status_code), cLength, cType, rUrl])
-    else:
-        print ", ".join([url, str(status_code), cLength, cType])
+    try:
+        req = requests.head(url, verify=False)
+        status_code = req.status_code
+        if status_code == 404:
+            return 
+        if "Content-Length" in req.headers.keys():
+            cLength = req.headers["Content-Length"]
+        else:
+            cLength = "Unknown"
+        if  "Content-Type" in req.headers.keys():
+            cType = req.headers["Content-Type"]
+        else:
+            cType = "Unknown"
+        if str(status_code)[0] == "3":
+            rUrl = req.headers["Location"]
+            print ", ".join([url, str(status_code), cLength, cType, rUrl])
+        else:
+            print ", ".join([url, str(status_code), cLength, cType])
+    except:
+        return
 
 if args.function == "pull":
     if not args.host:
