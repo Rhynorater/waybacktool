@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Tool for parsing WayBack URLs.')
 parser.add_argument('function', help="`pull` or `check`. `pull` will gather the urls from the WayBack API. `check` will ensure the response code is positive (200,301,302,307).")
 parser.add_argument('--host', help='The host whose URLs should be retrieved.')
 parser.add_argument('--threads', help='The number of threads to use (Default 5)', default=5)
-parser.add_argument('--with-subs', help='`yes` or `no`. Retrieve urls from subdomains of the host.', default=False)
+parser.add_argument('--with-subs', help='`yes` or `no`. Retrieve urls from subdomains of the host.', default=True)
 parser.add_argument('--loadfile', help='Location of file from which urls should be checked.')
 parser.add_argument('--outputfile', help='Location of the file to which checked urls should be reported')
 
@@ -27,7 +27,11 @@ def waybackurls(host, with_subs):
         url = 'http://web.archive.org/cdx/search/cdx?url=*.%s/*&output=list&fl=original&collapse=urlkey' % host
     else:
         url = 'http://web.archive.org/cdx/search/cdx?url=%s/*&output=list&fl=original&collapse=urlkey' % host
-    
+    r = requests.get(url)   
+    if args.outputfile:
+        j = open(args.outputfile, "w")
+        j.write(r.text.strip())
+        j.close()
     print r.text.strip()
     
 
@@ -113,6 +117,7 @@ if args.function == "pull":
     elif args.loadfile:
         for line in open(args.loadfile).readlines():
             waybackurls(line.strip(), args.with_subs)
+
 elif args.function == "check":
     if args.loadfile:
         try:
