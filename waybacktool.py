@@ -50,6 +50,9 @@ def check(url):
     except requests.exceptions.Timeout:
         timeout.append(domain)
         return
+    except requests.exceptions.ConnectionError:
+        timeout.append(domain)
+        return
     if str(req.status_code)[0] == "3" and url.startswith("http://") and req.headers['Location'].startswith("https://"):
         try:
             req = requests.head("https"+url[4:], verify=False, timeout=.25)
