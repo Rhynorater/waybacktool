@@ -34,3 +34,26 @@ http://example.com/example.html, 200, 1024, text/html
 ```
 
 Hope you all can use this!
+
+### Example Use Case
+
+Let's say you're a security researcher and you want to find all the javascript files on a domain and its subdomains. You can use waybacktool to do this.
+
+First, you would pull all the urls from the Wayback Machine for the domain and its subdomains:
+```
+$ python waybacktool.py pull --host example.com --with-subs yes > example.com.urls
+```
+
+This will create a file called `example.com.urls` with all the urls from the Wayback Machine for `example.com` and its subdomains.
+
+Next, you can use `grep` to filter for javascript files:
+```
+$ cat example.com.urls | grep .js > example.com.js.urls
+```
+
+Finally, you can use waybacktool to check the status of these javascript files:
+```
+$ cat example.com.js.urls | python waybacktool.py check
+```
+
+This will output the status code, content length, and content type for each javascript file. You can then use this information to determine which files are interesting for further analysis.
